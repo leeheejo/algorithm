@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-//¹Ý·Ê
+//ï¿½Ý·ï¿½
 //8 8
 //01000100
 //01010100
@@ -61,7 +61,6 @@ public class N2206 {
 			this.count = count;
 			this.flag = flag;
 		}
-
 	}
 
 	static void run(int x, int y, int count, boolean flag) {
@@ -84,7 +83,7 @@ public class N2206 {
 				if (nx < 1 || ny < 1 || nx > M || ny > N)
 					continue;
 
-				if (p.flag == true) {// º®À» ÀÌ¹Ì ºÎ¼ø °æ¿ì
+				if (p.flag == true) {// ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Î¼ï¿½ ï¿½ï¿½ï¿½
 
 					if (arr[nx][ny] != 0)
 						continue;
@@ -94,11 +93,11 @@ public class N2206 {
 					visited[1][nx][ny] = true;
 					q.add(new Point(nx, ny, p.count + 1, p.flag));
 
-				} else { // º®À» ¾È ºÎ¼ø °æ¿ì
+				} else { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Î¼ï¿½ ï¿½ï¿½ï¿½
 					if (visited[0][nx][ny] == true)
 						continue;
 
-					if (arr[nx][ny] == 1) { // º® ¸¸³²
+					if (arr[nx][ny] == 1) { // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 						visited[1][nx][ny] = true;
 						q.add(new Point(nx, ny, p.count + 1, true));
 					} else {
