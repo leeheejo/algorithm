@@ -21,11 +21,6 @@ public class N17825_re {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		selections = new int[10];
-		dice = new int[10];
-		markers = new Node[4];
-		answer = Integer.MIN_VALUE;
-
 		for (int i = 0; i < 10; ++i) {
 			dice[i] = Integer.parseInt(st.nextToken());
 		}
