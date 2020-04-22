@@ -32,11 +32,11 @@ public class N17779 {
 
 		for (int r = 1; r <= N; r++) {
 			for (int c = 1; c <= N; c++) {
-				for (int d1 = 1; d1 <= r; d1++) {
-					for (int d2 = 1; d2 <= N - r; d2++) {
-						if ((c + d1 + d2) <= N && (r - d1) >= 1 && (r - d1) < r && (r + d2) > r && (r + d2) <= N) { // 조건처리주의...
+				for (int d1 = 1; d1 <= N; d1++) {
+					for (int d2 = 1; d2 <= N; d2++) {
+						if ((r + d1 + d2) <= N && (c - d1) >= 1 && (r - d1) < c && (c + d2) > c && (c + d2) <= N) {// 조건처리주의...
 
-							draw(c, r, d1, d2);
+							draw(r, c, d1, d2);
 							int tmp = calc();
 							answer = Math.min(tmp, answer);
 						}
@@ -73,53 +73,52 @@ public class N17779 {
 //		3번 선거구: x+d1 ≤ r ≤ N, 1 ≤ c < y-d1+d2
 //		4번 선거구: x+d2 < r ≤ N, y-d1+d2 ≤ c ≤ N
 
-		for (int row = 1; row <= N; row++) {
-			for (int col = 1; col <= N; col++) {
-				if (map[row][col] != 5) {
-					if (1 <= col && col < c + d1 && 1 <= row && row <= r) {
-						map[row][col] = 1;
-					}
-					if (1 <= col && col <= c + d2 && r < row && row <= N) {
-						map[row][col] = 2;
-					}
-					if (c + d1 <= col && col <= N && 1 <= row && row < r - d1 + d2) {
-						map[row][col] = 3;
-					}
-					if (c + d2 < col && col <= N && r - d1 + d2 <= row && row <= N) {
-						map[row][col] = 4;
-					}
-				}
+		for (int p = 1; p <= N; ++p) {
+			for (int q = 1; q <= N; ++q) {
+				if (map[q][p] != 0)
+					continue;
+
+				if (p < (r + d1) && q <= c)
+					map[q][p] = 1;
+				else if ((r + d2) >= p && q > c)
+					map[q][p] = 2;
+				else if ((r + d1) <= p && q < (c - d1 + d2))
+					map[q][p] = 3;
+				else if ((r + d2) < p && (c - d1 + d2) <= q)
+					map[q][p] = 4;
+				else
+					map[q][p] = 5;
 			}
 		}
 
-//		// 5구역 채우기
-//		for (int p = 1; p <= N; ++p) {
-//			int left = -1;
-//			int right = -1;
-//
-//			int idx = 1;
-//			while (idx <= N) {
-//				if (map[idx][p] == 5) {
-//					left = idx;
-//					break;
-//				}
-//				idx++;
-//			}
-//
-//			idx = N;
-//			while (idx >= 0) {
-//				if (map[idx][p] == 5) {
-//					right = idx;
-//					break;
-//				}
-//				idx--;
-//			}
-//
-//			if (left != right) {
-//				for (int i = left; i < right; ++i)
-//					map[i][p] = 5;
-//			}
-//		}
+		// 5구역 채우기
+		for (int p = 1; p <= N; ++p) {
+			int left = -1;
+			int right = -1;
+
+			int idx = 1;
+			while (idx <= N) {
+				if (map[idx][p] == 5) {
+					left = idx;
+					break;
+				}
+				idx++;
+			}
+
+			idx = N;
+			while (idx >= 0) {
+				if (map[idx][p] == 5) {
+					right = idx;
+					break;
+				}
+				idx--;
+			}
+
+			if (left != right) {
+				for (int i = left; i < right; ++i)
+					map[i][p] = 5;
+			}
+		}
 	}
 
 	public static int calc() {
@@ -147,15 +146,15 @@ public class N17779 {
 		}
 
 		System.out.println();
-		 	System.out.println(max-min);
-			for (int r = 1; r <= N; r++) {
-				System.out.println();
-				for (int c = 1; c <= N; c++) {
-					System.out.print(map[c][r]+" ");
-				}
-
+		System.out.println(max - min);
+		for (int r = 1; r <= N; r++) {
+			System.out.println();
+			for (int c = 1; c <= N; c++) {
+				System.out.print(map[c][r] + " ");
 			}
-		
+
+		}
+
 		return max - min;
 	}
 }

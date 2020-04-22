@@ -64,6 +64,15 @@ public class N17779_ans {
 			max = area[i] > max ? area[i] : max;
 			min = area[i] < min ? area[i] : min;
 		}
+		
+		System.out.println();
+	 	System.out.println(max-min);
+		for (int r = 1; r <= N; r++) {
+			for (int c = 1; c <= N; c++) {
+				System.out.print(map[r][c]+" ");
+			}
+			System.out.println();
+		}
 		int gap = max - min;
 		ans = ans > gap ? gap : ans;
 	}
