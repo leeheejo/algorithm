@@ -13,7 +13,7 @@ public class N17837_2 {
 			super();
 			this.index = index;
 			this.c = c;
-			this.r = c;
+			this.r = r;
 			this.direction = direction;
 		}
 	}
@@ -23,8 +23,8 @@ public class N17837_2 {
 	static Marker[] markers;
 	static ArrayList<Integer>[][] map;
 
-	static int[] ac = { 0, 1, -1, 0, 0 };
-	static int[] ar = { 0, 0, 0, -1, 1 };
+	static int[] ac = { 0, 0, 0, -1, 1 };
+	static int[] ar = { 0, 1, -1, 0, 0 };
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -63,39 +63,48 @@ public class N17837_2 {
 			times++;
 
 			for (int i = 1; i <= K; ++i) {
+
 				if (move(i)) {
 					System.out.println(times);
 					return;
 				}
-				;
 			}
+//			for (int r = 1; r <= N; r++) {
+//				for (int c = 1; c <= N; c++) {
+//					System.out.print(map[c][r].size() + " ");
+//				}
+//				System.out.println();
+//			}
+//
+//			System.out.println();
 		}
-		// 1000¹ø ¾È¿¡ °ÔÀÓÀÌ ³¡³ªÁö ¾ÊÀ» °æ¿ì
+		// 1000ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		System.out.println(-1);
+
 	}
 
 	public static boolean move(int index) {
-		int cc = markers[index].c;
-		int cr = markers[index].r;
-		int nc = markers[index].c + ac[markers[index].direction];
-		int nr = markers[index].r + ar[markers[index].direction];
+		Marker now = markers[index];
 
-		if (nc < 1 || nr < 1 || nc > N || nr > N || colors[nc][nr] == 2) { // ¹æÇâ º¯°æ ÀÌµ¿ÇÏ·Á´Â Ä­ÀÌ ÆÄ¶ûÀÌ°Å³ª ¹üÀ§ ÀÌÅ»ÀÎ °æ¿ì
+		int nc = markers[index].c + ac[now.direction];
+		int nr = markers[index].r + ar[now.direction];
+
+		if (nc < 1 || nr < 1 || nc > N || nr > N || colors[nc][nr] == 2) { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï·ï¿½ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½Ì°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å»ï¿½ï¿½
+																			// ï¿½ï¿½ï¿½
 			if (markers[index].direction % 2 != 0) {
 				markers[index].direction += 1;
 			} else if (markers[index].direction % 2 == 0) {
 				markers[index].direction -= 1;
 			}
-			nc = markers[index].c + ac[markers[index].direction];
-			nr = markers[index].r + ar[markers[index].direction];
+			nc = now.c + ac[markers[index].direction];
+			nr = now.r + ar[markers[index].direction];
 		}
 
-		if (nr <= N && nr >= 1 && nc <= N && nc >= 1 && colors[nr][nc] != 2) {
-			int bottom = map[markers[index].c][markers[index].r].indexOf(index);
+		if (nr <= N && nr >= 1 && nc <= N && nc >= 1 && colors[nc][nr] != 2) {
 			if (colors[nc][nr] == 0) {
-				updateMarkers(new int[] { cc, cr }, new int[] { nc, nr }, map[cc][cr].size() - 1, bottom, 0);
+				updateMarkers(markers[index], nr, nc, 0);
 			} else if (colors[nc][nr] == 1) {
-				updateMarkers(new int[] { cc, cr }, new int[] { nc, nr }, map[cc][cr].size() - 1, bottom, 1);
+				updateMarkers(markers[index], nr, nc, 1);
 			}
 			if (map[nc][nr].size() >= 4) {
 				return true;
@@ -105,30 +114,34 @@ public class N17837_2 {
 		return false;
 	}
 
-	public static void updateMarkers(int[] from, int[] to, int top, int bottom, int color) {
+	public static void updateMarkers(Marker now, int nr, int nc, int color) {
 		// int[] from = { c, r};
+		ArrayList<Integer> from = map[now.c][now.r];
+		ArrayList<Integer> to = map[nc][nr];
+		int bottom = from.indexOf(now.index);
+		int top = from.size() - 1;
 
-		if (color == 0) {// È­ÀÌÆ®
+		if (color == 0) {// È­ï¿½ï¿½Æ®
 			for (int i = bottom; i <= top; i++) {
-				int m = map[from[0]][from[1]].get(i);
-				map[to[0]][to[1]].add(m);
-				markers[m].c = to[0];
-				markers[m].r = to[1];
+				int m = from.get(i);
+				to.add(m);
+				markers[m].c = nc;
+				markers[m].r = nr;
 			}
-		} else if (color == 1) { // »¡°­
-			for (int i = top; i <= bottom; i--) {
-				int m = map[from[0]][from[1]].get(i);
-				map[to[0]][to[1]].add(m);
-				markers[m].c = to[0];
-				markers[m].r = to[1];
+		} else if (color == 1) { // ï¿½ï¿½ï¿½ï¿½
+			for (int i = top; i >= bottom; i--) {
+				int m = from.get(i);
+				to.add(m);
+				markers[m].c = nc;
+				markers[m].r = nr;
 			}
 		}
 		removeMarkers(from, top, bottom);
 	}
 
-	public static void removeMarkers(int[] from, int top, int bottom) {
-		for (int i = bottom; i <= top; i++) {
-			map[from[0]][from[1]].remove(i);
+	public static void removeMarkers(ArrayList<Integer> list, int top, int bottom) {
+		for (int i = top; i >= bottom; i--) {
+			list.remove(i);
 		}
 	}
 }
