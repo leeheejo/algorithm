@@ -40,7 +40,7 @@ public class N17837_2 {
 		for (int i = 1; i <= N; i++) {
 			for (int j = 1; j <= N; j++) {
 				colors[i][j] = sc.nextInt();
-				map[i][j] = new ArrayList<Integer>();
+				map[i][j] = new ArrayList<>();
 			}
 		}
 
@@ -50,25 +50,28 @@ public class N17837_2 {
 			int r = sc.nextInt();
 			int direction = sc.nextInt();
 			markers[i] = new Marker(index, c, r, direction);
+			map[c][r].add(i);
 		}
 
 		play(0);
 	}
 
 	public static void play(int index) {
-		if (index == 1000) {
-			System.out.println(-1);
-			System.exit(0);
-		}
-		for (int i = 1; i <= K; i++) {
-			if (move(i)) {
-				System.out.println(index);
-				System.exit(0);
+		int times = 0;
+
+		while (times <= 1000) {
+			times++;
+
+			for (int i = 1; i <= K; ++i) {
+				if (move(i)) {
+					System.out.println(times);
+					return;
+				}
+				;
 			}
 		}
-
-		play(index + 1);
-
+		// 1000번 안에 게임이 끝나지 않을 경우
+		System.out.println(-1);
 	}
 
 	public static boolean move(int index) {
@@ -77,7 +80,7 @@ public class N17837_2 {
 		int nc = markers[index].c + ac[markers[index].direction];
 		int nr = markers[index].r + ar[markers[index].direction];
 
-		if (nc < 1 || nr < 1 || nc > N || nr > N || colors[nc][nr] == 0) { // 방향 변경 이동하려는 칸이 파랑이거나 범위 이탈인 경우
+		if (nc < 1 || nr < 1 || nc > N || nr > N || colors[nc][nr] == 2) { // 방향 변경 이동하려는 칸이 파랑이거나 범위 이탈인 경우
 			if (markers[index].direction % 2 != 0) {
 				markers[index].direction += 1;
 			} else if (markers[index].direction % 2 == 0) {
@@ -88,25 +91,12 @@ public class N17837_2 {
 		}
 
 		if (nr <= N && nr >= 1 && nc <= N && nc >= 1 && colors[nr][nc] != 2) {
+			int bottom = map[markers[index].c][markers[index].r].indexOf(index);
 			if (colors[nc][nr] == 0) {
-				int bottom = 0;
-				for (int i = 0; i < map[cc][cr].size(); i++) {
-					if (map[markers[index].c][markers[index].r].get(i) == index)
-						bottom = index;
-				}
-
 				updateMarkers(new int[] { cc, cr }, new int[] { nc, nr }, map[cc][cr].size() - 1, bottom, 0);
 			} else if (colors[nc][nr] == 1) {
-
-				int bottom = 0;
-				for (int i = 0; i < map[cc][cr].size(); i++) {
-					if (map[markers[index].c][markers[index].r].get(i) == index)
-						bottom = index;
-				}
-
 				updateMarkers(new int[] { cc, cr }, new int[] { nc, nr }, map[cc][cr].size() - 1, bottom, 1);
 			}
-
 			if (map[nc][nr].size() >= 4) {
 				return true;
 			}
