@@ -68,7 +68,7 @@ public class N17837_4 {
 
 	public static boolean move() {
 
-		for (int i = 1; i <= 4; i++) {
+		for (int i = 1; i <= K; i++) {
 			Marker now = markers[i];
 
 			// 이동하고자 하는 뱡향
@@ -84,8 +84,8 @@ public class N17837_4 {
 					now.d += 1;
 				}
 				// 다음칸 변경
-				nc = now.c + ac[i];
-				nr = now.r + ar[i];
+				nc = now.c + ac[now.d];
+				nr = now.r + ar[now.d];
 			}
 
 			// 화이트나 레드
@@ -100,8 +100,7 @@ public class N17837_4 {
 				update(now, nc, nr, 1);
 
 			}
-			print();
-
+			
 			if (map[nc][nr].size() >= 4)
 				return true;
 		}
