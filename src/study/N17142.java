@@ -28,16 +28,21 @@ public class N17142 {
 			this.count = count;
 		}
 
+		@Override
+		public String toString() {
+			return "Virus [x=" + x + ", y=" + y + "]";
+		}
+
 	}
 
 	static int N, M;
 	static int[][] map;
 	static ArrayList<Virus> virus;
-	static boolean[][] visited;
 	static Virus[] active;
 
 	static int[] ar = { 1, -1, 0, 0 };
 	static int[] ac = { 0, 0, 1, -1 };
+	static int ZERO = 0;
 
 	static int ans = Integer.MAX_VALUE;
 
@@ -47,7 +52,6 @@ public class N17142 {
 		N = sc.nextInt();
 		M = sc.nextInt();
 		map = new int[N][N];
-		visited = new boolean[N][N];
 		active = new Virus[M];
 		virus = new ArrayList<Virus>();
 		for (int c = 0; c < N; c++) {
@@ -56,75 +60,88 @@ public class N17142 {
 				if (map[c][r] == 2) {
 					virus.add(new Virus(c, r));
 				}
+				if (map[c][r] == 0) {
+					ZERO++;
+				}
 			}
 		}
-//		dfs(0);
-		System.out.println(spread());
-
-		System.out.println(ans);
+		if (ZERO == 0) {
+			System.out.println(0);
+			System.exit(0);
+		}
+		dfs(0, 0);
+		if (ans == Integer.MAX_VALUE)
+			System.out.println(-1);
+		else
+			System.out.println(ans);
 	}
 
-	public static void dfs(int index) {
+	public static void dfs(int index, int c) {
 		if (index == M) {
 			int a = spread();
+//			System.out.println(a + "s");
+//			for (int i = 0; i < active.length; i++) {
+//				System.out.print(active[i].toString() + " ");
+//			}
+//			System.out.println();
 			ans = Math.min(a, ans);
 			return;
 		}
 
-		for (int i = index; i < virus.size(); i++) {
+		for (int i = c; i < virus.size(); i++) {
 			active[index] = virus.get(i);
-			dfs(index + 1);
+			dfs(index + 1, i+1);
 		}
 	}
 
 	public static int spread() {
+		int z = ZERO;
 		int count = 0;
-		for (int i = 0; i < N; i++)
-			Arrays.fill(visited[i], false);
+		int[][] visited = new int[N][N];
 
 		Queue<Virus> q = new LinkedList<Virus>();
-//		for (int i = 0; i < M; i++) {
-//			q.add(active[i]);
-//		}
-
-		q.add(new Virus(0, 0));
-		q.add(new Virus(1, 6));
-		q.add(new Virus(4, 3));
+		for (int i = 0; i < M; i++) {
+			q.add(active[i]);
+			visited[active[i].x][active[i].y] = 1;
+		}
 
 		while (!q.isEmpty()) {
 			Virus v = q.poll();
-			visited[v.x][v.y] = true;
+			count = v.count;
 
 			for (int i = 0; i < 4; i++) {
 				int nx = v.x + ac[i];
 				int ny = v.y + ar[i];
 				if (nx < 0 || ny < 0 || nx >= N || ny >= N)
 					continue;
-				if (visited[nx][ny])
+				if (visited[nx][ny] != 0)
 					continue;
 				if (map[nx][ny] == 1)
 					continue;
 
-				print();
-				map[nx][ny] = 2;
+				visited[nx][ny] = v.count + 1;
+
 				q.add(new Virus(nx, ny, v.count + 1));
-				count = v.count + 1;
-
+				if (map[nx][ny] == 0) {
+					z--;
+					if (z == 0) {
+						return v.count + 1;
+					}
+				}
 			}
 		}
-		System.out.println(count);
 
-		return count;
+		return Integer.MAX_VALUE;
 	}
-
-	static void print() {
-		System.out.println();
-		System.out.println();
-		for (int c = 0; c < N; c++) {
-			for (int r = 0; r < N; r++) {
-				System.out.print(map[c][r] + " ");
-			}
-			System.out.println();
-		}
-	}
+//
+//	static void print() {
+//		System.out.println();
+//		System.out.println();
+//		for (int c = 0; c < N; c++) {
+//			for (int r = 0; r < N; r++) {
+//				System.out.print(visited[c][r] + " ");
+//			}
+//			System.out.println();
+//		}
+//	}
 }
