@@ -1,29 +1,84 @@
 package study;
+
 //https://buddev.tistory.com/25
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class N17143 {
-	public static class Shark {
-		int index, r, c, speed, direction, size;
-		boolean alive;
+	public static class Fish implements Comparable<Fish> {
+		int r, c, s, d, z;
 
-		public Shark(int index, int r, int c, int speed, int direction, int size) {
+		public Fish(int r, int c, int s, int d, int z) {
 			super();
 			this.r = r;
 			this.c = c;
-			this.speed = speed;
-			this.direction = direction;
-			this.size = size;
-			this.alive = true;
+			this.s = s;
+			this.d = d;
+			this.z = z;
 		}
+
+		public int getR() {
+			return r;
+		}
+
+		public void setR(int r) {
+			this.r = r;
+		}
+
+		public int getC() {
+			return c;
+		}
+
+		public void setC(int c) {
+			this.c = c;
+		}
+
+		public int getS() {
+			return s;
+		}
+
+		public void setS(int s) {
+			this.s = s;
+		}
+
+		public int getD() {
+			return d;
+		}
+
+		public void setD(int d) {
+			this.d = d;
+		}
+
+		public int getZ() {
+			return z;
+		}
+
+		public void setZ(int z) {
+			this.z = z;
+		}
+
+		@Override
+		public int compareTo(Fish o) {
+			// TODO Auto-generated method stub
+			if (this.c == o.c) {
+				if (this.r == o.r)
+					return this.z < this.z ? 1 : -1;
+				else
+					return this.r < o.r ? -1 : 1;
+			}
+			return this.c < o.c ? -1 : 1;
+		}
+
 	}
 
 	static int R, C, M;
-	static ArrayList<Shark>[][] map;
-	static Shark[] sharks;
-	static int ans = 0;
+	static ArrayList<Fish> list;
+	static int[][] size;
+	static int[][] speed;
+	static int[][] dir;
+
 	static int[] ar = { 0, -1, 1, 0, 0 };
 	static int[] ac = { 0, 0, 0, 1, -1 };
 
@@ -33,14 +88,8 @@ public class N17143 {
 		R = sc.nextInt();
 		C = sc.nextInt();
 		M = sc.nextInt();
-		map = new ArrayList[R + 1][C + 1];
-		sharks = new Shark[M];
 
-		for (int i = 1; i <= R; i++) {
-			for (int j = 1; j <= C; j++) {
-				map[i][j] = new ArrayList<Shark>();
-			}
-		}
+		list = new ArrayList<Fish>();
 
 		for (int i = 0; i < M; i++) {
 			int r = sc.nextInt();
@@ -48,82 +97,91 @@ public class N17143 {
 			int s = sc.nextInt();
 			int d = sc.nextInt();
 			int z = sc.nextInt();
-			Shark shark = new Shark(i, r, c, s, d, z);
-			map[r][c].add(shark);
-			sharks[i] = shark;
+			list.add(new Fish(r - 1, c - 1, s, d, z));
 		}
 
-		for (int i = 1; i <= 2; i++) {
-			get(i);
-			move();
-			print();
-			System.out.println();
-		}
+		int time = 0;
+		int result = 0;
 
-		System.out.println(ans);
+		while (time < C) {
+			Collections.sort(list);
 
-	}
-
-	public static void move() { // 상어이동.. alive 가 false 면 안타게 하자..
-		for (int i = 0; i < sharks.length; i++) {
-			Shark s = sharks[i];
-			if (!s.alive)
-				continue;
-			int nr = s.r;
-			int nc = s.c;
-			for (int j = 0; j < s.speed; j++) {
-				nr = nr + ar[s.direction];
-				nc = nc + ac[s.direction];
-				if (nr < 1 || nc < 1 || nr > R || nc > C) { // 범위 이탈하면 방향 변경해서 재시도한다..
-					if (s.direction % 2 == 0)
-						s.direction -= 1;
-					else
-						s.direction += 1;
-					nr = nr + ar[s.direction] + ar[s.direction];
-					nc = nc + ac[s.direction] + ac[s.direction];
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).c == time) {
+					result += list.get(i).z;
+					list.remove(i);
+					break;
 				}
 			}
 
+			for (int i = 0; i < list.size(); i++) {
+				Fish f = list.get(i);
+				int r = f.r;
+				int c = f.c;
+				int dir = f.d;
+				int cnt = f.s;
 
-			map[s.r][s.c].remove(0);
-			s.r = nr;
-			s.c = nc;
-			if (map[nr][nc].size() == 0) {
-				map[nr][nc].add(s);
-			} else {
-				Shark tmp = map[nr][nc].get(0);
-				if (tmp.size < s.size) {
-					sharks[tmp.index].alive = false;
-					map[nr][nc].remove(0);
-					map[nr][nc].add(s);
+				while (cnt > 0) {
+					r += ar[dir];
+					c += ac[dir];
+					if (r < 0 || c < 0 || r >= R || c >= C) {
+						r -= ar[dir];
+						c -= ac[dir];
+
+						if (dir == 1)
+							dir = 2;
+						else if (dir == 2)
+							dir = 1;
+						else if (dir == 3)
+							dir = 4;
+						else if (dir == 4)
+							dir = 3;
+						continue;
+					}
+					cnt--;
+				}
+
+				list.get(i).setR(r);
+				list.get(i).setC(c);
+				list.get(i).setD(dir);
+			}
+
+			size = new int[R][C];
+			speed = new int[R][C];
+			dir = new int[R][C];
+
+			for (int i = 0; i < list.size(); i++) {
+				int r = list.get(i).r;
+				int c = list.get(i).c;
+
+				if (size[r][c] == 0) {
+					size[r][c] = list.get(i).z;
+					speed[r][c] = list.get(i).s;
+					dir[r][c] = list.get(i).d;
 				} else {
-					sharks[s.index].alive = false;
+					if (size[r][c] < list.get(i).z) {
+						size[r][c] = list.get(i).z;
+						speed[r][c] = list.get(i).s;
+						dir[r][c] = list.get(i).d;
+					}
 				}
 			}
 
-		}
+			list.clear();
 
-	}
-
-	public static void get(int idx) { // 물고기 잡기..
-		for (int i = 1; i <= R; i++) {
-			if (map[i][idx].size() != 0) {
-				ans += map[i][idx].get(0).size;
-				map[i][idx].get(0).alive = false;
-				map[i][idx].remove(0);
-				break;
+			for (int i = 0; i < R; i++) {
+				for (int j = 0; j < C; j++) {
+					if (size[i][j] != 0) {
+						list.add(new Fish(i, j, speed[i][j], dir[i][j], size[i][j]));
+					}
+				}
 			}
+
+			time++;
 		}
 
-	}
+		System.out.println(result);
 
-	public static void print() {
-		for (int i = 1; i <= R; i++) {
-			for (int j = 1; j <= C; j++) {
-				System.out.print(map[i][j].size() + " ");
-			}
-			System.out.println();
-		}
 	}
 
 }
