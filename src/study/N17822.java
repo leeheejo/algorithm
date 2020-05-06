@@ -105,7 +105,7 @@ public class N17822 {
 					}
 				}
 
-				if (map[j][i] != 0 && (j == 1 || j == M)) {
+				if (map[j][i] != 0 && (j == 1 || j == M)) { //마지막 애랑 제일 처음 애랑 비교해야함 
 					if (map[1][i] == map[M][i]) {
 						zero.add(new int[] { 1, i });
 						zero.add(new int[] { M, i });

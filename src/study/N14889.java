@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-//시간 초과 나옴 ㅜㅜ
 public class N14889 {
 
 	static int N;
