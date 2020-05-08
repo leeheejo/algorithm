@@ -61,11 +61,11 @@ public class N16637 {
 		}
 
 		for (int i = c; i < N - 2;) {
-			if (visited[i] == true) {
+			if (visited[i] == true) { // 괄호를 추가한 경우 
 				i++;
 				continue;
 			}
-			if (i % 2 == 1) {
+			if (i % 2 == 1) { // 연산자인 경우는 통과한다 -> 숫자-연산자-숫자 이렇게 연속해서 검사 할 것이기 때문에 
 				i++;
 				continue;
 			}
@@ -73,11 +73,11 @@ public class N16637 {
 			visited[i] = true;
 			visited[i + 1] = true;
 			visited[i + 2] = true;
-			dfs(index + 1, i + 3);
+			dfs(index + 1, i + 3); //다음 숫자부터 검사할수 있게 한다. 
 			visited[i] = false;
 			visited[i + 1] = false;
 			visited[i + 2] = false;
-			i += 2;
+			i += 2; // 2 * 3을 이번에 true로 변경했다면 다음엔 3부터 true로 변경해야 한다. 
 		}
 
 	}
