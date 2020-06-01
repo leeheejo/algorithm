@@ -1,4 +1,4 @@
-package study;
+package study.programmers;
 
 import java.util.PriorityQueue;
 

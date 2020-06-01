@@ -1,10 +1,10 @@
-package study;
+package study.programmers;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class PG42629 {
+public class PG42629_2 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
